@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check your health condition</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body class="bg-dark text-white">
+    <nav class="navbar navbar-expand-md navbar-dark bgdak">
+        <div class="container">
+          <a class="navbar-brand fw-bolder fs-3" href="./index.html">Check your health condition</a>
+          <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo2">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="navbar-collapse collapse" id="navbarTogglerDemo2">
+            <ul class="navbar-nav ms-auto fw-bold">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="./calculateBMR.html">Calculate BMR</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="./calculateBMI.html">Calculate BMI</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+
+    <!-- input -->
+    <div class="container mt-3">
+        <div class="row d-flex justify-content-center">
+            <div class="col-sm-12 col-md-8">
+                <div class="fw-bolder fs-1 text-center bgdak rounded-3 py-3 mb-2">Calculate BMI</div>
+                <form id="bmiForm">
+                    <div class="mb-3">
+                        <label for="age" class="form-label">Age</label>
+                        <input type="number" class="form-control" id="age" placeholder="Enter your age" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="height" class="form-label">Height (feet)</label>
+                        <div class="d-flex gap-3">
+                            <input type="number" class="form-control" id="heightFeet" placeholder="Feet" required>
+                            <input type="number" class="form-control" id="heightInch" placeholder="Inch" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="weight" class="form-label">Weight (kg)</label>
+                        <input type="number" class="form-control" id="weight" placeholder="Enter your weight" required>
+                    </div>
+                    <button class="btn btn-primary" type="submit">Check</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="modal fade" id="bmiruseltopenmodal" tabindex="-1">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bgdak text-white text-center">
+              <h5 class="modal-title fw-bolder fs-2 pt-3" id="modalBasicLabel">Your Body Mass Index(BMI)</h5>
+              <div class="modal-body" id="bmiResult"></div>
+              <div>
+              <button type="button" class="btn btn-danger mb-3" aria-label="Close" data-bs-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('bmiForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Get user input values
+            const age = parseInt(document.getElementById('age').value);  
+            const heightFeet = parseFloat(document.getElementById('heightFeet').value);
+            const heightInch = parseFloat(document.getElementById('heightInch').value);
+            const weight = parseFloat(document.getElementById('weight').value);  
+           
+            // Input validation
+            if (isNaN(heightFeet) || heightFeet <= 0 || isNaN(heightInch) || heightInch >= 12 || isNaN(weight) || weight <= 0) {
+                alert('Please enter valid input in all fields.');
+                return;
+            }
+
+            // Convert height to meters and calculate BMI
+            const heightInMeters = (heightFeet * 0.3048) + (heightInch * 0.0254);
+            const bmi = weight / (heightInMeters * heightInMeters);
+
+
+            // BMI interpretation and result display
+            const bmiResult = document.getElementById('bmiResult');
+            bmiResult.innerHTML = '';  // Clear previous results
+
+            let interpretation;
+            if (bmi < 18.5) {
+                interpretation = `<p class="fw-bolder display-1 text-danger">${bmi.toFixed(2)}</p>
+                <div class="display-5 fw-bold text-danger pb-3">You are underweight</div>`;
+            } else if (bmi >= 18.5 && bmi <= 24.9) {
+                interpretation = `<p class="fw-bolder display-1 text-success">${bmi.toFixed(2)}</p>
+                <div class="display-5 fw-bold text-success pb-3">You are normal weight</div>`;
+            } else if (bmi >= 25 && bmi <= 29.9) {
+                interpretation = `<p class="fw-bolder display-1 text-warning">${bmi.toFixed(2)}</p>
+                <div class="display-5 fw-bold text-warning pb-3">You are overweight</div>`;
+            } else {
+                interpretation = `<p class="fw-bolder display-1 text-danger">${bmi.toFixed(2)}</p>
+                <div class="display-5 fw-bold text-danger pb-3">You are obese</div>`;
+            }
+
+            bmiResult.innerHTML += interpretation;
+
+            const bmrModal = new bootstrap.Modal(document.getElementById('bmiruseltopenmodal'));
+            bmrModal.show();
+        });
+
+        window.onload = function() {
+            
+            document.getElementById('age').value = '';
+            document.getElementById('heightFeet').value = '';
+            document.getElementById('heightInch').value = '';
+            document.getElementById('weight').value = '';
+            
+        };
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
